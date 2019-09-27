@@ -41,7 +41,25 @@ class ProjectNameGUI(App):
 
 Window.clearcolor = (0, 0, 0, 1)  # Black
 
+class MainScreen(Screen):
 
+    joystick = Joystick(0, False)
+    space_x_val = ObjectProperty()
+    space_y_val = ObjectProperty()
+
+    def __init__(self, **kwargs):
+        super(MainScreen, self).__init__(**kwargs)
+
+    def space_update(self):  # This should be inside the MainScreen Class
+        while True:
+            self.ship_x_val = self.joystick.get_axis('x') * 400
+            self.ids.spaceship.x = self.ship_x_val
+            self.ship_y_val = self.joystick.get_axis('y') * -300
+            self.ids.spaceship.y = self.ship_y_val
+            sleep(.01)
+
+    def start_space_thread(self):  # This should be inside the MainScreen Class
+        Thread(target=self.space_update).start()
 
 
 

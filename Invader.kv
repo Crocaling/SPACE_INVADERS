@@ -1,4 +1,10 @@
 <MainScreen>
     name: 'main'
+    on_enter: root.start_space_thread()
+
     FloatLayout:
         size_hint: None, None
+
+    Label:
+        id: spaceship
+        text: "<_-_>"
