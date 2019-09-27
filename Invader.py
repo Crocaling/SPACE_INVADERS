@@ -44,11 +44,13 @@ Window.clearcolor = (0, 0, 0, 1)  # Black
 class MainScreen(Screen):
 
     joystick = Joystick(0, False)
-    space_x_val = ObjectProperty()
-    space_y_val = ObjectProperty()
+    ship_x_val = ObjectProperty()
+    ship_y_val = ObjectProperty()
+    bdgy_pos = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
+        self.bdgy_pos = .1
 
     def space_update(self):  # This should be inside the MainScreen Class
         while True:
@@ -60,13 +62,19 @@ class MainScreen(Screen):
 
     def bdgy_move(self):
         while True:
-            for r in range (0, 10):
-                self.ids.bdgy1.x += .1
-            for w in range(0, 20):
-                self.ids.bdgy1
+            for r in range(0, 8):
+                self.ids.bdgy1.x += 10
+                sleep(.05)
+            for w in range(0, 16):
+                self.ids.bdgy1.x -= 10
+                sleep(.02)
+            for l in range(0, 8):
+                self.ids.bdgy1.x += 10
+                sleep(.05)
 
     def start_space_thread(self):  # This should be inside the MainScreen Class
         Thread(target=self.space_update).start()
+        Thread(target=self.bdgy_move).start()
 
 
 
