@@ -46,7 +46,7 @@ Window.clearcolor = (0, 0, 0, 1)  # Black
 
 
 
-Builder.load_file('main.kv')
+Builder.load_file('Invader.kv')
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 
 def send_event(event_name):
