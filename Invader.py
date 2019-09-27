@@ -58,6 +58,13 @@ class MainScreen(Screen):
             self.ids.spaceship.y = self.ship_y_val
             sleep(.01)
 
+    def bdgy_move(self):
+        while True:
+            for r in range (0, 10):
+                self.ids.bdgy1.x += .1
+            for w in range(0, 20):
+                self.ids.bdgy1
+
     def start_space_thread(self):  # This should be inside the MainScreen Class
         Thread(target=self.space_update).start()
 
