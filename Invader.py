@@ -49,7 +49,10 @@ class MainScreen(Screen):
     ship_x_val = ObjectProperty()
     ship_y_val = ObjectProperty()
     bdgy_pos = ObjectProperty()
+    global array3
+
     global event1
+    global event2
     global array
     global array2
     array = []
@@ -58,8 +61,9 @@ class MainScreen(Screen):
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         global event1
+        global event2
         event1 = Clock.schedule_interval(self.fire, 1/4)
-        event2 = Clock.schedule_interval(self.fire2, 1/2)
+        event2 = Clock.schedule_interval(self.fire2, 1/5)
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
 
@@ -84,6 +88,7 @@ class MainScreen(Screen):
                 self.remove_widget(labels)
             labels.y = labels.y + 10
     def moveup2(self):
+
         for labels2 in array2:
             if(labels2.y < -290):
                 array2.remove(labels2)
@@ -97,10 +102,13 @@ class MainScreen(Screen):
             array.append(labels)
             self.add_widget(labels)
     def fire2(self,dt):
-
+        global array3
+        array3 = [self.ids.bdgy1, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6, self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9]
         global array2
         # print("fired")
-        labels2 = Label(text = "!", x = self.ids.bdgy1.x, y = self.height * .35)
+        #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
+        # manually filling in the array like I did here.
+        labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = self.height * .35)
         array2.append(labels2)
         self.add_widget(labels2)
 
