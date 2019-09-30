@@ -20,6 +20,7 @@ import logging
 import threading
 from threading import Thread
 from time import sleep
+import random
 
 MIXPANEL_TOKEN = "x"
 MIXPANEL = MixPanel("Project Name", MIXPANEL_TOKEN)
@@ -50,33 +51,65 @@ class MainScreen(Screen):
     bdgy_pos = ObjectProperty()
     global event1
     global array
+    global array2
     array = []
+    array2 = []
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         global event1
-        event1 = Clock.schedule_interval(self.fire,1/3)
+        event1 = Clock.schedule_interval(self.fire, 1/4)
+        event2 = Clock.schedule_interval(self.fire2, 1/2)
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
+
+    global xin
+    xin = 0
+    global x
+
+    def counter(self):
+        global xin
+        global x
+        xin = xin + 1
+        if xin == 100:
+            xin = 0
+        else:
+            # print ("%d" % xin)
+            x = "%d" % xin
+
     def moveup(self):
         for labels in array:
             if(labels.y > 290):
                 array.remove(labels)
                 self.remove_widget(labels)
             labels.y = labels.y + 10
+    def moveup2(self):
+        for labels2 in array2:
+            if(labels2.y < -290):
+                array2.remove(labels2)
+                self.remove_widget(labels2)
+            labels2.y = labels2.y - 7
     def fire(self,dt):
         if(self.joystick.get_button_state(0)==1):
             global array
            # print("fired")
-            labels = Label(text = "-", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
+            labels = Label(text = "|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
             array.append(labels)
             self.add_widget(labels)
+    def fire2(self,dt):
+
+        global array2
+        # print("fired")
+        labels2 = Label(text = "!", x = self.ids.bdgy1.x, y = self.height * .35)
+        array2.append(labels2)
+        self.add_widget(labels2)
 
     def space_update(self):  # This should be inside the MainScreen Class
         while True:
             self.ship_x_val = self.joystick.get_axis('x') * 400
             self.ids.spaceship.x = self.ship_x_val
             self.moveup()
+            self.moveup2()
             #self.ship_y_val = self.joystick.get_axis('y') * -300
             #self.ids.spaceship.y = self.ship_y_val
             sleep(.01)
@@ -96,6 +129,8 @@ class MainScreen(Screen):
     def start_space_thread(self):  # This should be inside the MainScreen Class
         Thread(target=self.space_update).start()
         Thread(target=self.bdgy_move).start()
+
+
 
 
 
