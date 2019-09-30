@@ -47,10 +47,17 @@ class MainScreen(Screen):
     ship_x_val = ObjectProperty()
     ship_y_val = ObjectProperty()
     bdgy_pos = ObjectProperty()
+    global event1
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
+        global event1
+        event1 = Clock.schedule_interval(self.fire,1/3)
+        # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
+    def fire(self,dt):
+        if(self.joystick.get_button_state(0)==1):
+            print("fired")
 
     def space_update(self):  # This should be inside the MainScreen Class
         while True:
