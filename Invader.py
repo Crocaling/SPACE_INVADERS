@@ -62,14 +62,14 @@ class MainScreen(Screen):
 
     def bdgy_move(self):
         while True:
-            for r in range(0, 8):
-                self.ids.bdgy1.x += 10
+            for r in range(0, 16):
+                self.ids.bdgy1.x += 4
                 sleep(.05)
-            for w in range(0, 16):
-                self.ids.bdgy1.x -= 10
-                sleep(.02)
-            for l in range(0, 8):
-                self.ids.bdgy1.x += 10
+            for w in range(0, 32):
+                self.ids.bdgy1.x -= 4
+                sleep(.05)
+            for l in range(0, 16):
+                self.ids.bdgy1.x += 4
                 sleep(.05)
 
     def start_space_thread(self):  # This should be inside the MainScreen Class
