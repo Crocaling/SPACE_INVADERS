@@ -55,7 +55,7 @@ class MainScreen(Screen):
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         global event1
-        event1 = Clock.schedule_interval(self.fire,1/3)
+        event1 = Clock.schedule_interval(self.fire,1/4)
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
     def moveup(self):
@@ -64,11 +64,12 @@ class MainScreen(Screen):
                 array.remove(labels)
                 self.remove_widget(labels)
             labels.y = labels.y + 10
+            #print("Bullets on screen: %d"%len(array))
     def fire(self,dt):
         if(self.joystick.get_button_state(0)==1):
             global array
            # print("fired")
-            labels = Label(text = "-", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
+            labels = Label(text = "☭", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
             array.append(labels)
             self.add_widget(labels)
 
