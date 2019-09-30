@@ -56,15 +56,15 @@ class MainScreen(Screen):
         while True:
             self.ship_x_val = self.joystick.get_axis('x') * 400
             self.ids.spaceship.x = self.ship_x_val
-            self.ship_y_val = self.joystick.get_axis('y') * -300
-            self.ids.spaceship.y = self.ship_y_val
+            #self.ship_y_val = self.joystick.get_axis('y') * -300
+            #self.ids.spaceship.y = self.ship_y_val
             sleep(.01)
 
     def bdgy_move(self):
         while True:
             for r in range(0, 8):
                 self.ids.bdgy1.x += 10
-                sleep(.05)
+                sleep(.03)
             for w in range(0, 16):
                 self.ids.bdgy1.x -= 10
                 sleep(.02)
