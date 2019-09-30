@@ -50,7 +50,6 @@ class MainScreen(Screen):
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
-        print("difference")
         self.bdgy_pos = .1
 
     def space_update(self):  # This should be inside the MainScreen Class
