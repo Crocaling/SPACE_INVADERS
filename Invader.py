@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.label import Label
 
 from pidev.MixPanel import MixPanel
 from pidev.kivy.PassCodeScreen import PassCodeScreen
@@ -48,6 +49,8 @@ class MainScreen(Screen):
     ship_y_val = ObjectProperty()
     bdgy_pos = ObjectProperty()
     global event1
+    global array
+    array = []
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -55,14 +58,25 @@ class MainScreen(Screen):
         event1 = Clock.schedule_interval(self.fire,1/3)
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
+    def moveup(self):
+        for labels in array:
+            if(labels.y > 290):
+                array.remove(labels)
+                self.remove_widget(labels)
+            labels.y = labels.y + 10
     def fire(self,dt):
         if(self.joystick.get_button_state(0)==1):
-            print("fired")
+            global array
+           # print("fired")
+            labels = Label(text = "-", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
+            array.append(labels)
+            self.add_widget(labels)
 
     def space_update(self):  # This should be inside the MainScreen Class
         while True:
             self.ship_x_val = self.joystick.get_axis('x') * 400
             self.ids.spaceship.x = self.ship_x_val
+            self.moveup()
             #self.ship_y_val = self.joystick.get_axis('y') * -300
             #self.ids.spaceship.y = self.ship_y_val
             sleep(.01)
