@@ -144,6 +144,7 @@ class MainScreen(Screen):
                 self.remove_widget(labels2)
             if(abs(labels2.y-(self.ids.spaceship.y))<20 and abs(labels2.x-self.ship_x_val)<20):
                 lives = lives - 1
+                self.ids.life.text = "Health:%d" % lives
                 labels2.text = ">><<"
                 labels2.color = (1,0,0,1)
                 sleep(1/10)
@@ -163,12 +164,13 @@ class MainScreen(Screen):
             array.append(labels)
             self.add_widget(labels)
 
-        if (self.joystick.get_button_state(2) == 1 and self.wave_count > 0):
+        if (self.joystick.get_button_state(1) == 1 and self.wave_count > 0):
             # print("fired")
             labels = Label(text="(^^^^^^)", x=self.joystick.get_axis('x') * 400, y=self.height * -.1)
             array.append(labels)
             self.add_widget(labels)
             self.wave_count -= 1
+            self.ids.power.text = "Powerups:%d" % self.wave_count
 
         if (self.joystick.get_button_state(6) == 1):
             self.ids.spaceship.x -= .05
