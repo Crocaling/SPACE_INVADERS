@@ -61,7 +61,7 @@ class WinScreen(Screen):
 
 class MainScreen(Screen):
 
-    joystick = Joystick(0, False)
+    joystick = Joystick(0, True)
     ship_x_val = ObjectProperty()
     ship_y_val = ObjectProperty()
     bdgy_pos = ObjectProperty()
@@ -75,6 +75,7 @@ class MainScreen(Screen):
     global lives
     global bad
     global bruh
+    global win_count
     bruh = 0
     bad = 0
     global array3
@@ -88,12 +89,14 @@ class MainScreen(Screen):
         global event1
         global event2
         global array3
+        global win_count
+        win_count = 0
         array3 = [self.ids.bdgy0, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6,
                   self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9, self.ids.bdgy10, self.ids.bdgy11, self.ids.bdgy12,
                   self.ids.bdgy13, self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18,
                   self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22, self.ids.bdgy23, self.ids.bdgy24,
                   self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
-        event1 = Clock.schedule_interval(self.fire, 1/4)
+        event1 = Clock.schedule_interval(self.fire, 1/40)
         event2 = Clock.schedule_interval(self.fire2, 1/5)
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
@@ -117,19 +120,21 @@ class MainScreen(Screen):
         global array
         global bruh
         global bad
+        global win_count
         for labels in array:
             if(labels.y > 300):
                 array.remove(labels)
                 self.remove_widget(labels)
             for riseups in array3:
-                if(labels.text == "(^^^^^^)"):
-                    if (abs(labels.y - (riseups.y)) < 50 and abs(labels.x - riseups.x) < 50):
+                if labels.text == "(^^^^^^)":
+                    if abs(labels.y - (riseups.y)) < 50 and abs(labels.x - riseups.x) < 50:
                         self.remove_widget(riseups)
                         array3.remove(riseups)
-                        if array3 == []:
+                        win_count += 1
+                        if win_count == 27:
                             SCREEN_MANAGER.current = WIN_SCREEN_NAME
                         bruh = bruh +1
-                        if(bruh == 3):
+                        if bruh == 3:
                             bruh = 0
                             self.remove_widget(labels)
                             bad = 1
@@ -210,7 +215,7 @@ class MainScreen(Screen):
             sleep(.01)
 
     def bdgy_move(self):
-        while True:
+        while array3 != []:
             for r in range(0, 8):
                 self.ids.bdgy1.x += 10
                 sleep(.03)
