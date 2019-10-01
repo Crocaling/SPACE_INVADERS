@@ -29,6 +29,7 @@ SCREEN_MANAGER = ScreenManager()
 MAIN_SCREEN_NAME = 'main'
 END_SCREEN_NAME = 'end'
 
+
 class ProjectNameGUI(App):
     """
     Class to handle running the GUI Application
@@ -43,14 +44,17 @@ class ProjectNameGUI(App):
 
 
 Window.clearcolor = (0, 0, 0, 1)  # Black
+
+
 class OverScreen(Screen):
     def __init__(self, **kwargs):
         super(OverScreen, self).__init__(**kwargs)
+
     def setColor(self):
         Window.clearcolor = (1, 0, 0, 1)
 
-class MainScreen(Screen):
 
+class MainScreen(Screen):
     joystick = Joystick(0, False)
     ship_x_val = ObjectProperty()
     ship_y_val = ObjectProperty()
@@ -85,7 +89,8 @@ class MainScreen(Screen):
                   self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
         event1 = Clock.schedule_interval(self.fire, 1/4)
         event2 = Clock.schedule_interval(self.fire2, 1/5)
-        # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
+        # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if
+        # the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
 
     global xin
@@ -108,7 +113,11 @@ class MainScreen(Screen):
         global bruh
         global bad
         for labels in array:
+<<<<<<< HEAD
             if(labels.y > 300):
+=======
+            if labels.y > 290:
+>>>>>>> Changed syntax to be better.
                 array.remove(labels)
                 self.remove_widget(labels)
             for riseups in array3:
@@ -139,10 +148,10 @@ class MainScreen(Screen):
         global lives
         global array2
         for labels2 in array2:
-            if(labels2.y < -250):
+            if labels2.y < -250:
                 array2.remove(labels2)
                 self.remove_widget(labels2)
-            if(abs(labels2.y-(self.ids.spaceship.y))<20 and abs(labels2.x-self.ship_x_val)<20):
+            if abs(labels2.y-self.ids.spaceship.y)<20 and abs(labels2.x-self.ship_x_val)<20:
                 lives = lives - 1
                 labels2.text = ">><<"
                 labels2.color = (1,0,0,1)
@@ -150,18 +159,20 @@ class MainScreen(Screen):
                 self.remove_widget(labels2)
                 array2.remove(labels2)
                 print("u were hit")
-                if(lives <= 0):
+                if lives <= 0:
                     self.ids.spaceship.y = -1000
                     SCREEN_MANAGER.current = END_SCREEN_NAME
                     print("lmao u ded")
             labels2.y = labels2.y - 7
+
     def fire(self,dt):
-        if(self.joystick.get_button_state(0)==1):
+        if self.joystick.get_button_state(0)==1:
             global array
-           # print("fired")
-            labels = Label(text = "|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
+            # print("fired")
+            labels = Label(text="|", x=self.joystick.get_axis('x')*400, y=self.height * -.38)
             array.append(labels)
             self.add_widget(labels)
+
 
         if (self.joystick.get_button_state(2) == 1 and self.wave_count > 0):
             # print("fired")
@@ -178,9 +189,10 @@ class MainScreen(Screen):
 
         global array2
         # print("fired")
-        #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
+        # Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels
+        # and put them in the array instead of
         # manually filling in the array like I did here.
-        labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
+        labels2 = Label(text="@", x=array3[int(random.random()*(len(array3)-1))].x, y=array3[int(random.random()*(len(array3)-1))].y)
         array2.append(labels2)
         self.add_widget(labels2)
 
@@ -190,8 +202,8 @@ class MainScreen(Screen):
             self.ids.spaceship.x = self.ship_x_val
             self.moveup()
             self.moveup2()
-            #self.ship_y_val = self.joystick.get_axis('y') * -300
-            #self.ids.spaceship.y = self.ship_y_val
+            # self.ship_y_val = self.joystick.get_axis('y') * -300
+            # self.ids.spaceship.y = self.ship_y_val
             sleep(.01)
 
     def bdgy_move(self):
@@ -211,13 +223,12 @@ class MainScreen(Screen):
         Thread(target=self.bdgy_move).start()
 
 
-
-
-
-
 Builder.load_file('Invader.kv')
+
+
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(OverScreen(name=END_SCREEN_NAME))
+
 
 def send_event(event_name):
     """
