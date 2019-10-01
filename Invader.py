@@ -113,11 +113,8 @@ class MainScreen(Screen):
         global bruh
         global bad
         for labels in array:
-<<<<<<< HEAD
+
             if(labels.y > 300):
-=======
-            if labels.y > 290:
->>>>>>> Changed syntax to be better.
                 array.remove(labels)
                 self.remove_widget(labels)
             for riseups in array3:
