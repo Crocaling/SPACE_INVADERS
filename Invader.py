@@ -55,6 +55,8 @@ class MainScreen(Screen):
     global event2
     global array
     global array2
+    global lives
+    lives = 5
     array = []
     array2 = []
 
@@ -87,12 +89,23 @@ class MainScreen(Screen):
                 array.remove(labels)
                 self.remove_widget(labels)
             labels.y = labels.y + 10
-    def moveup2(self):
 
+    def moveup2(self):
+        global lives
         for labels2 in array2:
-            if(labels2.y < -290):
+            if(labels2.y < -250):
                 array2.remove(labels2)
                 self.remove_widget(labels2)
+            if(abs(labels2.y-(self.ids.spaceship.y))<20 and abs(labels2.x-self.ship_x_val)<20):
+                lives = lives - 1
+                labels2.text = ">><<"
+                labels2.color = (1,0,0,1)
+                sleep(1/10)
+                array2.remove(labels2)
+                self.remove_widget(labels2)
+                print("u were hit")
+                if(lives <= 0):
+                    print("lmao u ded")
             labels2.y = labels2.y - 7
     def fire(self,dt):
         if(self.joystick.get_button_state(0)==1):
