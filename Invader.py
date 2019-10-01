@@ -28,6 +28,7 @@ MIXPANEL = MixPanel("Project Name", MIXPANEL_TOKEN)
 SCREEN_MANAGER = ScreenManager()
 MAIN_SCREEN_NAME = 'main'
 END_SCREEN_NAME = 'end'
+WIN_SCREEN_NAME = 'win'
 
 class ProjectNameGUI(App):
     """
@@ -48,6 +49,15 @@ class OverScreen(Screen):
         super(OverScreen, self).__init__(**kwargs)
     def setColor(self):
         Window.clearcolor = (1, 0, 0, 1)
+
+
+class WinScreen(Screen):
+    def __init__(self, **kwargs):
+        super(WinScreen, self).__init__(**kwargs)
+
+    def setColor(self):
+            Window.clearcolor = (1, 0, 1, 1)
+
 
 class MainScreen(Screen):
 
@@ -116,6 +126,8 @@ class MainScreen(Screen):
                     if (abs(labels.y - (riseups.y)) < 50 and abs(labels.x - riseups.x) < 50):
                         self.remove_widget(riseups)
                         array3.remove(riseups)
+                        if array3 == []:
+                            SCREEN_MANAGER.current = WIN_SCREEN_NAME
                         bruh = bruh +1
                         if(bruh == 3):
                             bruh = 0
@@ -182,9 +194,10 @@ class MainScreen(Screen):
         # print("fired")
         #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
         # manually filling in the array like I did here.
-        labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
-        array2.append(labels2)
-        self.add_widget(labels2)
+        if not array3 == []:
+            labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
+            array2.append(labels2)
+            self.add_widget(labels2)
 
     def space_update(self):  # This should be inside the MainScreen Class
         while True:
@@ -220,7 +233,7 @@ class MainScreen(Screen):
 Builder.load_file('Invader.kv')
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(OverScreen(name=END_SCREEN_NAME))
-
+SCREEN_MANAGER.add_widget(WinScreen(name=WIN_SCREEN_NAME))
 def send_event(event_name):
     """
     Send an event to MixPanel without properties

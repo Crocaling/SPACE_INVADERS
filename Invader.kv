@@ -227,3 +227,13 @@
         text: "GAME OVER"
         color: .7, .7, 0, 1
         font_size: 100
+
+<WinScreen>
+    name: 'win'
+    on_enter: root.setColor()
+    FloatLayout:
+        size_hint: None, None
+    Label:
+        text: "VICTORY!!"
+        color: .7, .7, 0, 1
+        font_size: 100
