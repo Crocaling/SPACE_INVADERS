@@ -64,6 +64,8 @@ class MainScreen(Screen):
     global array2
     global lives
     global bad
+    global bruh
+    bruh = 0
     bad = 0
     global array3
     lives = 5
@@ -103,12 +105,23 @@ class MainScreen(Screen):
     def moveup(self):
         global array3
         global array
+        global bruh
         global bad
         for labels in array:
             if(labels.y > 300):
                 array.remove(labels)
                 self.remove_widget(labels)
             for riseups in array3:
+                if(labels.text == "(^^^^^^)"):
+                    if (abs(labels.y - (riseups.y)) < 50 and abs(labels.x - riseups.x) < 50):
+                        self.remove_widget(riseups)
+                        array3.remove(riseups)
+                        bruh = bruh +1
+                        if(bruh == 3):
+                            bruh = 0
+                            self.remove_widget(labels)
+                            bad = 1
+
                 if (abs(labels.y - (riseups.y)) < 20 and abs(labels.x - riseups.x) < 20):
                     self.remove_widget(riseups)
                     array3.remove(riseups)
