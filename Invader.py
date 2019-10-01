@@ -49,6 +49,7 @@ class MainScreen(Screen):
     ship_x_val = ObjectProperty()
     ship_y_val = ObjectProperty()
     bdgy_pos = ObjectProperty()
+    wave_count = ObjectProperty()
     global array3
 
     global event1
@@ -62,6 +63,7 @@ class MainScreen(Screen):
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
+        self.wave_count = 5
         global event1
         global event2
         event1 = Clock.schedule_interval(self.fire, 1/4)
@@ -114,6 +116,17 @@ class MainScreen(Screen):
             labels = Label(text = "|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
             array.append(labels)
             self.add_widget(labels)
+
+        if (self.joystick.get_button_state(2) == 1 and self.wave_count > 0):
+            # print("fired")
+            labels = Label(text="(^^^^^^)", x=self.joystick.get_axis('x') * 400, y=self.height * -.1)
+            array.append(labels)
+            self.add_widget(labels)
+            self.wave_count -= 1
+
+        if (self.joystick.get_button_state(6) == 1):
+            self.ids.spaceship.x -= .05
+
     def fire2(self,dt):
         global array3
         array3 = [self.ids.bdgy1, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6, self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9, self.ids.bdgy10, self.ids.bdgy11, self.ids.bdgy12, self.ids.bdgy13, self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18, self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22, self.ids.bdgy23, self.ids.bdgy24, self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
