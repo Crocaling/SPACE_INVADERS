@@ -103,12 +103,12 @@ class MainScreen(Screen):
             self.add_widget(labels)
     def fire2(self,dt):
         global array3
-        array3 = [self.ids.bdgy1, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6, self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9]
+        array3 = [self.ids.bdgy1, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6, self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9, self.ids.bdgy10, self.ids.bdgy11, self.ids.bdgy12, self.ids.bdgy13, self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18, self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22, self.ids.bdgy23, self.ids.bdgy24, self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
         global array2
         # print("fired")
         #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
         # manually filling in the array like I did here.
-        labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = self.height * .35)
+        labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
         array2.append(labels2)
         self.add_widget(labels2)
 
