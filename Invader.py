@@ -27,6 +27,7 @@ MIXPANEL = MixPanel("Project Name", MIXPANEL_TOKEN)
 
 SCREEN_MANAGER = ScreenManager()
 MAIN_SCREEN_NAME = 'main'
+END_SCREEN_NAME = 'end'
 
 class ProjectNameGUI(App):
     """
@@ -42,6 +43,11 @@ class ProjectNameGUI(App):
 
 
 Window.clearcolor = (0, 0, 0, 1)  # Black
+class OverScreen(Screen):
+    def __init__(self, **kwargs):
+        super(OverScreen, self).__init__(**kwargs)
+    def setColor(self):
+        Window.clearcolor = (1, 0, 0, 1)
 
 class MainScreen(Screen):
 
@@ -105,6 +111,8 @@ class MainScreen(Screen):
                 self.remove_widget(labels2)
                 print("u were hit")
                 if(lives <= 0):
+                    self.ids.spaceship.y = -1000
+                    SCREEN_MANAGER.current = END_SCREEN_NAME
                     print("lmao u ded")
             labels2.y = labels2.y - 7
     def fire(self,dt):
@@ -158,6 +166,7 @@ class MainScreen(Screen):
 
 Builder.load_file('Invader.kv')
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
+SCREEN_MANAGER.add_widget(OverScreen(name=END_SCREEN_NAME))
 
 def send_event(event_name):
     """
