@@ -29,6 +29,7 @@ SCREEN_MANAGER = ScreenManager()
 MAIN_SCREEN_NAME = 'main'
 END_SCREEN_NAME = 'end'
 WIN_SCREEN_NAME = 'win'
+BOSS_SCREEN_NAME = 'boss'
 
 class ProjectNameGUI(App):
     """
@@ -56,7 +57,149 @@ class WinScreen(Screen):
         super(WinScreen, self).__init__(**kwargs)
 
     def setColor(self):
-            Window.clearcolor = (1, 0, 1, 1)
+            Window.clearcolor = (1, 0, 0, 1)
+
+class BossScreen(Screen):
+
+    def setColor(self):
+        Window.clearcolor = (0, 0, 0, 1)
+        while True:
+            Thread(target=self.space_update).start()
+            Thread(target=self.boss_move).start()
+            Thread.daemon = True
+
+    joystick = Joystick(0, True)
+    ship_x_val = ObjectProperty()
+    ship_y_val = ObjectProperty()
+    wave_count = ObjectProperty()
+    global end
+    global event1
+    global event2
+    global array
+    global array2
+    global lives
+    global bad
+    global bruh
+    global win_count
+    end = False
+    array = []
+    array2 = []
+
+    def __init__(self, **kwargs):
+        super(BossScreen, self).__init__(**kwargs)
+        self.wave_count = 5
+        global event1
+        global event2
+        global win_count
+        global win
+        win = True
+        win_count = 0
+        #event1 = Clock.schedule_interval(self.fire, 1 / 4)
+        # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
+
+    def moveup2(self):
+        global end
+        global event1
+        global event2
+        global lives
+        global array2
+        global win
+        for labels2 in array2:
+            if(labels2.y < -250):
+                array2.remove(labels2)
+                self.remove_widget(labels2)
+            if(abs(labels2.y-(self.ids.spaceship2.y))<20 and abs(labels2.x-self.ship_x_val)<20):
+                lives = lives - 1
+                self.ids.life.text = "Health:%d" % lives
+                labels2.text = ">><<"
+                labels2.color = (1,0,0,1)
+                sleep(1/10)
+                self.remove_widget(labels2)
+                array2.remove(labels2)
+                print("u were hit")
+                if(lives <= 0):
+                    self.ids.spaceship2.y = -1000
+                    win = False
+                    SCREEN_MANAGER.current = END_SCREEN_NAME
+                    end = True
+                    print("lmao u ded")
+            labels2.y = labels2.y - 7
+
+
+    def boss_move(self):
+        movement = random.randrange(0, 5, 1)
+        print(movement)
+        if movement == 1:
+            print("movement1")
+            anim1 = Animation(pos=(-300, 200), size=(50, 50), duration=1)
+            anim1.start(self.ids.bossship)
+            sleep(1)
+            for r in range(0,12):
+                labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                array2.append(labels2)
+                self.add_widget(labels2)
+                self.ids.bossship.x += 50
+                sleep(1)
+        if movement == 2:
+            print("movement2")
+            anim2 = Animation(pos=(-300, 200), duration=1)
+            anim2.start(self.ids.bossship)
+            sleep(1)
+            for i in range(0, 5):
+                anim2 = Animation(pos=(random.randrange(-300, 300, 10), 150), size=(100, 100), duration=5) + Animation(pos=(random.randrange(-300, 300, 10), 150), size=(5, 5), duration=5)
+                anim2.start(self.ids.bossship)
+                labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                array2.append(labels2)
+                self.add_widget(labels2)
+                sleep(1)
+        if movement == 3:
+            print("movement3")
+            for e in range(0, 5):
+                anim3 = Animation(pos=(random.randrange(-300, 300, 10), self.height * -.1), duration=2)
+                anim3.start(self.ids.bossship)
+                print("3-firing")
+                sleep(1)
+                labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                array2.append(labels2)
+                self.add_widget(labels2)
+                print("2-fired")
+                sleep(1)
+        if movement == 4:
+            print("movement4")
+            for k in range(0, 5):
+                anim4 = Animation(pos=(self.ids.spaceship2.x, self.ids.bossship.y), size=(75, 75), duration=2)
+                anim4.start(self.ids.bossship)
+                sleep(1)
+                for e in range(0, 30):
+                    labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    array2.append(labels2)
+                    self.add_widget(labels2)
+                    sleep(1)
+        if movement == 5:
+            print("movement5")
+            for j in range(0, 5):
+                anim5 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(1, 1), duration=2)
+                anim5.start(self.ids.bossship)
+                sleep(1)
+                for f in range(0, 2):
+                    labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    array2.append(labels2)
+                    self.add_widget(labels2)
+                    sleep(1)
+        anim6 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(75, 75), duration=2)
+        anim6.start(self.ids.bossship)
+
+
+    def space_update(self): # This should be inside the MainScreen Class
+        global end
+        while end == False:
+            self.ship_x_val = self.joystick.get_axis('x') * 400
+            self.ids.spaceship2.x = self.ship_x_val
+            self.moveup()
+            self.moveup2()
+            #self.ship_y_val = self.joystick.get_axis('y') * -300
+            #self.ids.spaceship2.y = self.ship_y_val
+            sleep(.01)
 
 
 class MainScreen(Screen):
@@ -148,7 +291,7 @@ class MainScreen(Screen):
                             event1.cancel()
                             event2.cancel()
                             end = True
-                            SCREEN_MANAGER.current = WIN_SCREEN_NAME
+                            SCREEN_MANAGER.current = BOSS_SCREEN_NAME
                         bruh = bruh +1
                         if bruh == 3:
                             bruh = 0
@@ -164,7 +307,7 @@ class MainScreen(Screen):
                     if win_count == 27 and win == True:
                         event1.cancel()
                         event2.cancel()
-                        SCREEN_MANAGER.current = WIN_SCREEN_NAME
+                        SCREEN_MANAGER.current = BOSS_SCREEN_NAME
                         end = True
             if(bad == 1):
                 array.remove(labels)
@@ -263,6 +406,8 @@ Builder.load_file('Invader.kv')
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(OverScreen(name=END_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(WinScreen(name=WIN_SCREEN_NAME))
+SCREEN_MANAGER.add_widget(BossScreen(name=BOSS_SCREEN_NAME))
+
 def send_event(event_name):
     """
     Send an event to MixPanel without properties

@@ -244,3 +244,22 @@
         font_size: 20
         y: root.height * -.2
         x: root.width *-.05
+
+<BossScreen>
+    name: 'boss'
+    on_enter: root.setColor()
+    FloatLayout:
+        size_hint: None, None
+
+    Image:
+        id: bossship
+        source: "boss_ship2.jpg"
+        y: root.height * .35
+        x: root.width * .1
+        size: 75, 75
+
+    Label:
+        id: spaceship2
+        text: "<_-_>"
+        y: root.height * -.38
+        color: 1, 1, 1, 1
