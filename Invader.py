@@ -223,16 +223,10 @@ class MainScreen(Screen):
             sleep(.01)
 
     def bdgy_move(self):
-        while array3 != []:
-            for r in range(0, 8):
-                self.ids.bdgy1.x += 10
-                sleep(.03)
-            for w in range(0, 16):
-                self.ids.bdgy1.x -= 10
-                sleep(.02)
-            for l in range(0, 8):
-                self.ids.bdgy1.x += 10
-                sleep(.05)
+        anim = Animation(pos=(80, 1000), duration=.3) + Animation(pos=(-80, 1000), duration=.5) + Animation(
+            pos=(0, 1000), duration=.35)
+        anim.repeat = True
+        anim.start(self.ids.bdgy1)
 
     def start_space_thread(self):  # This should be inside the MainScreen Class
         Thread(target=self.space_update).start()
