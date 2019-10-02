@@ -258,6 +258,7 @@ class MainScreen(Screen):
     def start_space_thread(self):  # This should be inside the MainScreen Class
         Thread(target=self.space_update).start()
         Thread(target=self.bdgy_move).start()
+        Thread.daemon = True
 
 
 
