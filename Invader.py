@@ -6,6 +6,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.label import Label
 
+
 from pidev.MixPanel import MixPanel
 from pidev.kivy.PassCodeScreen import PassCodeScreen
 from pidev.kivy.PauseScreen import PauseScreen
@@ -64,7 +65,6 @@ class MainScreen(Screen):
     joystick = Joystick(0, True)
     ship_x_val = ObjectProperty()
     ship_y_val = ObjectProperty()
-    bdgy_pos = ObjectProperty()
     wave_count = ObjectProperty()
     global array3
 
@@ -96,10 +96,9 @@ class MainScreen(Screen):
                   self.ids.bdgy13, self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18,
                   self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22, self.ids.bdgy23, self.ids.bdgy24,
                   self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
-        event1 = Clock.schedule_interval(self.fire, 1/40)
-        event2 = Clock.schedule_interval(self.fire2, 1/5)
+        event1 = Clock.schedule_interval(self.fire, 1/4)
+        event2 = Clock.schedule_interval(self.fire2, 1/8)
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
-        self.bdgy_pos = .1
 
     global xin
     xin = 0
@@ -122,7 +121,7 @@ class MainScreen(Screen):
         global bad
         global win_count
         for labels in array:
-            if(labels.y > 300):
+            if(labels.y > 1000):
                 array.remove(labels)
                 self.remove_widget(labels)
             for riseups in array3:
@@ -131,6 +130,7 @@ class MainScreen(Screen):
                         self.remove_widget(riseups)
                         array3.remove(riseups)
                         win_count += 1
+                        print(win_count)
                         if win_count == 27:
                             SCREEN_MANAGER.current = WIN_SCREEN_NAME
                         bruh = bruh +1
@@ -143,13 +143,14 @@ class MainScreen(Screen):
                     self.remove_widget(riseups)
                     array3.remove(riseups)
                     self.remove_widget(labels)
+                    win_count += 1
+                    print(win_count)
+                    if win_count == 27:
+                        SCREEN_MANAGER.current = WIN_SCREEN_NAME
                     bad = 1
             if(bad == 1):
                 array.remove(labels)
                 bad = 0
-
-
-
             labels.y = labels.y + 10
 
     def moveup2(self):
@@ -215,16 +216,9 @@ class MainScreen(Screen):
             sleep(.01)
 
     def bdgy_move(self):
-        while array3 != []:
-            for r in range(0, 8):
-                self.ids.bdgy1.x += 10
-                sleep(.03)
-            for w in range(0, 16):
-                self.ids.bdgy1.x -= 10
-                sleep(.02)
-            for l in range(0, 8):
-                self.ids.bdgy1.x += 10
-                sleep(.05)
+        anim = Animation(pos=(80, 1000), duration=.3) + Animation(pos=(-80, 1000), duration=.5) + Animation(pos=(0, 1000), duration=.35)
+        anim.repeat = True
+        anim.start(self.ids.bdgy1)
 
     def start_space_thread(self):  # This should be inside the MainScreen Class
         Thread(target=self.space_update).start()
