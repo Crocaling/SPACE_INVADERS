@@ -67,7 +67,7 @@ class MainScreen(Screen):
     bdgy_pos = ObjectProperty()
     wave_count = ObjectProperty()
     global array3
-
+    global end
     global event1
     global event2
     global array
@@ -76,6 +76,7 @@ class MainScreen(Screen):
     global bad
     global bruh
     global win_count
+    end = False
     bruh = 0
     bad = 0
     global array3
@@ -106,7 +107,13 @@ class MainScreen(Screen):
     global xin
     xin = 0
     global x
-
+    def close(self):
+        global event2
+        global event1
+        global end
+        event1.cancel()
+        event2.cancel()
+        end = True
     def counter(self):
         global xin
         global x
@@ -119,6 +126,9 @@ class MainScreen(Screen):
 
     def moveup(self):
         global win
+        global end
+        global event2
+        global event1
         global array3
         global array
         global bruh
@@ -135,6 +145,9 @@ class MainScreen(Screen):
                         array3.remove(riseups)
                         win_count += 1
                         if win_count == 27 and win == True:
+                            event1.cancel()
+                            event2.cancel()
+                            end = True
                             SCREEN_MANAGER.current = WIN_SCREEN_NAME
                         bruh = bruh +1
                         if bruh == 3:
@@ -149,7 +162,10 @@ class MainScreen(Screen):
                     bad = 1
                     win_count += 1
                     if win_count == 27 and win == True:
+                        event1.cancel()
+                        event2.cancel()
                         SCREEN_MANAGER.current = WIN_SCREEN_NAME
+                        end = True
             if(bad == 1):
                 array.remove(labels)
                 bad = 0
@@ -159,6 +175,9 @@ class MainScreen(Screen):
             labels.y = labels.y + 10
 
     def moveup2(self):
+        global end
+        global event1
+        global event2
         global lives
         global array2
         global win
@@ -179,6 +198,7 @@ class MainScreen(Screen):
                     self.ids.spaceship.y = -1000
                     win = False
                     SCREEN_MANAGER.current = END_SCREEN_NAME
+                    end = True
                     print("lmao u ded")
             labels2.y = labels2.y - 7
     def fire(self,dt):
@@ -212,8 +232,9 @@ class MainScreen(Screen):
             array2.append(labels2)
             self.add_widget(labels2)
 
-    def space_update(self):  # This should be inside the MainScreen Class
-        while True:
+    def space_update(self): # This should be inside the MainScreen Class
+        global end
+        while end == False:
             self.ship_x_val = self.joystick.get_axis('x') * 400
             self.ids.spaceship.x = self.ship_x_val
             self.moveup()
@@ -223,7 +244,7 @@ class MainScreen(Screen):
             sleep(.01)
 
     def bdgy_move(self):
-        while array3 != []:
+        while end == False:
             for r in range(0, 8):
                 self.ids.bdgy1.x += 10
                 sleep(.03)
