@@ -3,8 +3,9 @@ import os
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 
 from pidev.MixPanel import MixPanel
 from pidev.kivy.PassCodeScreen import PassCodeScreen
@@ -29,6 +30,7 @@ SCREEN_MANAGER = ScreenManager()
 MAIN_SCREEN_NAME = 'main'
 END_SCREEN_NAME = 'end'
 WIN_SCREEN_NAME = 'win'
+START_SCREEN_NAME = 'start'
 
 class ProjectNameGUI(App):
     """
@@ -44,6 +46,12 @@ class ProjectNameGUI(App):
 
 
 Window.clearcolor = (0, 0, 0, 1)  # Black
+
+
+#class ScreenManagement(ScreenManager):
+ #   pass
+
+
 class OverScreen(Screen):
     def __init__(self, **kwargs):
         super(OverScreen, self).__init__(**kwargs)
@@ -57,6 +65,17 @@ class WinScreen(Screen):
 
     def setColor(self):
             Window.clearcolor = (1, 0, 1, 1)
+
+
+class StartScreen(Screen):
+    def __init__(self, **kwargs):
+        super(StartScreen, self).__init__(**kwargs)
+
+    def setColor(self):
+            Window.clearcolor = (0, 0, 0, 1)
+
+    def startGame(self):
+        SCREEN_MANAGER.current = MAIN_SCREEN_NAME
 
 
 class MainScreen(Screen):
@@ -211,7 +230,7 @@ class MainScreen(Screen):
         if(self.joystick.get_button_state(0)==1):
             global array
            # print("fired")
-            labels = Label(text = "|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
+            labels = Label(text ="|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
             array.append(labels)
             self.add_widget(labels)
 
@@ -233,7 +252,7 @@ class MainScreen(Screen):
         #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
         # manually filling in the array like I did here.
         if not array3 == []:
-            labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
+            labels2 = Label(text = '@', x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
             array2.append(labels2)
             self.add_widget(labels2)
 
@@ -262,12 +281,12 @@ class MainScreen(Screen):
 
 
 
-
-
 Builder.load_file('Invader.kv')
+SCREEN_MANAGER.add_widget(StartScreen(name=START_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(OverScreen(name=END_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(WinScreen(name=WIN_SCREEN_NAME))
+
 def send_event(event_name):
     """
     Send an event to MixPanel without properties
