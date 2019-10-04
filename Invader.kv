@@ -303,10 +303,24 @@
     on_enter: root.setColor()
     FloatLayout:
         size_hint: None, None
+    Image:
+        source: "main.jpg"
     Label:
         text: "GAME OVER"
-        color: .7, .7, 0, 1
+        color: 1, 1, 1, 1
         font_size: 100
+    Label:
+        text: 'Better luck nex- never mind.'
+        color: 1, 1, 1, 1
+        font_size: 10
+        y: root.height * 0.3
+    DPEAButton:
+        text: 'Return to Menu'
+        color: (0, .5, .7, 1)
+        x: root.width * 0.38
+        y: root.height * 0.22
+        size: 200, 40
+        on_press: root.go_back()
 
 <WinScreen>
     name: 'win'

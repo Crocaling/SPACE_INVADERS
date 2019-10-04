@@ -53,7 +53,10 @@ class OverScreen(Screen):
     def __init__(self, **kwargs):
         super(OverScreen, self).__init__(**kwargs)
     def setColor(self):
-        Window.clearcolor = (1, 0, 0, 1)
+        Window.clearcolor = (0, 0, 0, 1)
+
+    def go_back(self):
+        SCREEN_MANAGER.current = START_SCREEN_NAME
 
 
 class WinScreen(Screen):
