@@ -32,7 +32,9 @@ END_SCREEN_NAME = 'end'
 WIN_SCREEN_NAME = 'win'
 BOSS_SCREEN_NAME = 'boss'
 START_SCREEN_NAME = 'start'
-
+CREDIT_SCREEN_NAME = 'credit'
+OPTION_SCREEN_NAME = 'option'
+HOW_SCREEN_NAME = 'how'
 class ProjectNameGUI(App):
     """
     Class to handle running the GUI Application
@@ -214,6 +216,48 @@ class StartScreen(Screen):
     def startGame(self):
         SCREEN_MANAGER.current = MAIN_SCREEN_NAME
 
+    def credit(self):
+        SCREEN_MANAGER.current = CREDIT_SCREEN_NAME
+
+    def option(self):
+        SCREEN_MANAGER.current = OPTION_SCREEN_NAME
+
+    def how(self):
+        SCREEN_MANAGER.current = HOW_SCREEN_NAME
+
+
+class CreditScreen(Screen):
+    def __init__(self, **kwargs):
+        super(CreditScreen, self).__init__(**kwargs)
+
+    def setColor(self):
+            Window.clearcolor = (0, 0, 0, 1)
+
+    def go_back(self):
+        SCREEN_MANAGER.current = START_SCREEN_NAME
+
+
+class HowScreen(Screen):
+    def __init__(self, **kwargs):
+        super(HowScreen, self).__init__(**kwargs)
+
+    def setColor(self):
+            Window.clearcolor = (0, 0, 0, 1)
+
+    def go_back(self):
+        SCREEN_MANAGER.current = START_SCREEN_NAME
+
+
+class OptionScreen(Screen):
+    def __init__(self, **kwargs):
+        super(OptionScreen, self).__init__(**kwargs)
+
+    def setColor(self):
+            Window.clearcolor = (0, 0, 0, 1)
+
+    def go_back(self):
+        SCREEN_MANAGER.current = START_SCREEN_NAME
+
 
 class MainScreen(Screen):
 
@@ -255,10 +299,11 @@ class MainScreen(Screen):
                   self.ids.bdgy13, self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18,
                   self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22, self.ids.bdgy23, self.ids.bdgy24,
                   self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
-        event1 = Clock.schedule_interval(self.fire, 1/4)
-        event2 = Clock.schedule_interval(self.fire2, 1/(len(array3)/2))
+        event1 = Clock.schedule_interval(self.fire, 1 / 4)
+        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2))
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
+
 
     global xin
     xin = 0
@@ -388,10 +433,11 @@ class MainScreen(Screen):
         # print("fired")
         #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
         # manually filling in the array like I did here.
-        if not array3 == []:
-            labels2 = Label(text = '@', x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
-            array2.append(labels2)
-            self.add_widget(labels2)
+        if SCREEN_MANAGER.current == MAIN_SCREEN_NAME:
+            if not array3 == []:
+                labels2 = Label(text = '@', x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
+                array2.append(labels2)
+                self.add_widget(labels2)
 
     def space_update(self): # This should be inside the MainScreen Class
         global end
@@ -418,19 +464,18 @@ class MainScreen(Screen):
 
 
 
+
 Builder.load_file('Invader.kv')
 SCREEN_MANAGER.add_widget(StartScreen(name=START_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(OverScreen(name=END_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(WinScreen(name=WIN_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(BossScreen(name=BOSS_SCREEN_NAME))
+SCREEN_MANAGER.add_widget(CreditScreen(name=CREDIT_SCREEN_NAME))
+SCREEN_MANAGER.add_widget(OptionScreen(name=OPTION_SCREEN_NAME))
+SCREEN_MANAGER.add_widget(HowScreen(name=HOW_SCREEN_NAME))
 
 def send_event(event_name):
-    """
-    Send an event to MixPanel without properties
-    :param event_name: Name of the event
-    :return: None
-    """
     global MIXPANEL
 
     MIXPANEL.set_event_name(event_name)
