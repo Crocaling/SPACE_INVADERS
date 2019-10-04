@@ -3,8 +3,9 @@ import os
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 
 from pidev.MixPanel import MixPanel
 from pidev.kivy.PassCodeScreen import PassCodeScreen
@@ -30,6 +31,7 @@ MAIN_SCREEN_NAME = 'main'
 END_SCREEN_NAME = 'end'
 WIN_SCREEN_NAME = 'win'
 BOSS_SCREEN_NAME = 'boss'
+START_SCREEN_NAME = 'start'
 
 class ProjectNameGUI(App):
     """
@@ -202,6 +204,17 @@ class BossScreen(Screen):
             sleep(.01)
 
 
+class StartScreen(Screen):
+    def __init__(self, **kwargs):
+        super(StartScreen, self).__init__(**kwargs)
+
+    def setColor(self):
+            Window.clearcolor = (0, 0, 0, 1)
+
+    def startGame(self):
+        SCREEN_MANAGER.current = MAIN_SCREEN_NAME
+
+
 class MainScreen(Screen):
 
     joystick = Joystick(0, True)
@@ -243,7 +256,7 @@ class MainScreen(Screen):
                   self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22, self.ids.bdgy23, self.ids.bdgy24,
                   self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
         event1 = Clock.schedule_interval(self.fire, 1/4)
-        event2 = Clock.schedule_interval(self.fire2, 1/5)
+        event2 = Clock.schedule_interval(self.fire2, 1/(len(array3)/2))
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
         self.bdgy_pos = .1
 
@@ -286,10 +299,12 @@ class MainScreen(Screen):
                     if abs(labels.y - (riseups.y)) < 50 and abs(labels.x - riseups.x) < 50:
                         self.remove_widget(riseups)
                         array3.remove(riseups)
+                        Clock.unschedule(event2)
+                        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2 + .0001))
                         win_count += 1
                         if win_count == 27 and win == True:
-                            event1.cancel()
-                            event2.cancel()
+                            Clock.unschedule(event1)
+                            Clock.unschedule(event2)
                             end = True
                             SCREEN_MANAGER.current = BOSS_SCREEN_NAME
                         bruh = bruh +1
@@ -304,6 +319,8 @@ class MainScreen(Screen):
                     self.remove_widget(labels)
                     bad = 1
                     win_count += 1
+                    Clock.unschedule(event2)
+                    event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2 + .0001))
                     if win_count == 27 and win == True:
                         event1.cancel()
                         event2.cancel()
@@ -342,13 +359,15 @@ class MainScreen(Screen):
                     win = False
                     SCREEN_MANAGER.current = END_SCREEN_NAME
                     end = True
+                    Clock.unschedule(event1)
+                    Clock.unschedule(event2)
                     print("lmao u ded")
             labels2.y = labels2.y - 7
     def fire(self,dt):
         if(self.joystick.get_button_state(0)==1):
             global array
            # print("fired")
-            labels = Label(text = "|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
+            labels = Label(text ="|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
             array.append(labels)
             self.add_widget(labels)
 
@@ -365,13 +384,12 @@ class MainScreen(Screen):
 
     def fire2(self,dt):
         global array3
-
         global array2
         # print("fired")
         #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
         # manually filling in the array like I did here.
         if not array3 == []:
-            labels2 = Label(text = "@", x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
+            labels2 = Label(text = '@', x = array3[int(random.random()*(len(array3)-1))].x, y = array3[int(random.random()*(len(array3)-1))].y)
             array2.append(labels2)
             self.add_widget(labels2)
 
@@ -400,9 +418,8 @@ class MainScreen(Screen):
 
 
 
-
-
 Builder.load_file('Invader.kv')
+SCREEN_MANAGER.add_widget(StartScreen(name=START_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(OverScreen(name=END_SCREEN_NAME))
 SCREEN_MANAGER.add_widget(WinScreen(name=WIN_SCREEN_NAME))

@@ -6,9 +6,9 @@
     FloatLayout:
         size_hint: None, None
 
-    Label:
+    Image:
         id: spaceship
-        text: "<_-_>"
+        source: "alien2.jpg"
         y: root.height * -.38
     Label:
         id: life
@@ -218,6 +218,21 @@
         x: root.ids.bdgy1.x + 300
         color: 0, 1, 0, 1
 
+<StartScreen>
+    name: 'Start'
+    on_enter: root. setColor()
+    FloatLayout:
+        size_hint: None, None
+    Image:
+        source: 'alien.jpg'
+        y: root.height * .4
+    DPEAButton:
+        text: 'Start'
+        color: (0, .5, .7, 1)
+        x: root.width * 0.38
+        y: root.height * 0.3
+        size: 200, 40
+        on_press:root.startGame()
 <OverScreen>
     name: 'end'
     on_enter: root.setColor()
