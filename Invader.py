@@ -70,10 +70,9 @@ class BossScreen(Screen):
 
     def setColor(self):
         Window.clearcolor = (0, 0, 0, 1)
-        while True:
-            Thread(target=self.space_update).start()
-            Thread(target=self.boss_move).start()
-            Thread.daemon = True
+        Thread(target=self.space_update).start()
+        Thread(target=self.boss_move).start()
+        Thread.daemon = True
 
     joystick = Joystick(0, True)
     ship_x_val = ObjectProperty()
@@ -88,6 +87,8 @@ class BossScreen(Screen):
     global bad
     global bruh
     global win_count
+    global count
+    global count2
     end = False
     array = []
     array2 = []
@@ -134,67 +135,88 @@ class BossScreen(Screen):
 
 
     def boss_move(self):
-        movement = random.randrange(0, 5, 1)
-        print(movement)
-        if movement == 1:
-            print("movement1")
-            anim1 = Animation(pos=(-300, 200), size=(50, 50), duration=1)
-            anim1.start(self.ids.bossship)
-            sleep(1)
-            for r in range(0,12):
-                labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                array2.append(labels2)
-                self.add_widget(labels2)
-                self.ids.bossship.x += 50
+        global count
+        global count2
+        self.count = 0
+        self.count2 = 0
+        while True:
+            movement = random.randrange(0, 5, 1)
+            print(movement)
+            if movement == 1:
+                print("movement1")
+                anim1 = Animation(pos=(-300, 200), size=(50, 50), duration=1)
+                anim1.start(self.ids.bossship)
                 sleep(1)
-        if movement == 2:
-            print("movement2")
-            anim2 = Animation(pos=(-300, 200), duration=1)
-            anim2.start(self.ids.bossship)
-            sleep(1)
-            for i in range(0, 5):
-                anim2 = Animation(pos=(random.randrange(-300, 300, 10), 150), size=(100, 100), duration=5) + Animation(pos=(random.randrange(-300, 300, 10), 150), size=(5, 5), duration=5)
+                if self.count < 6:
+                    print("1-Firing " + str(self.count))
+                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    array2.append(labels2)
+                    self.add_widget(labels2)
+                    self.ids.bossship.x += 50
+                    sleep(1)
+                    self.count += 1
+
+            if movement == 2:
+                print("movement2")
+                anim2 = Animation(pos=(-300, 200), duration=1)
                 anim2.start(self.ids.bossship)
-                labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                array2.append(labels2)
-                self.add_widget(labels2)
                 sleep(1)
-        if movement == 3:
-            print("movement3")
-            for e in range(0, 5):
-                anim3 = Animation(pos=(random.randrange(-300, 300, 10), self.height * -.1), duration=2)
-                anim3.start(self.ids.bossship)
-                print("3-firing")
-                sleep(1)
-                labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                array2.append(labels2)
-                self.add_widget(labels2)
-                print("2-fired")
-                sleep(1)
-        if movement == 4:
-            print("movement4")
-            for k in range(0, 5):
-                anim4 = Animation(pos=(self.ids.spaceship2.x, self.ids.bossship.y), size=(75, 75), duration=2)
-                anim4.start(self.ids.bossship)
-                sleep(1)
-                for e in range(0, 30):
-                    labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                if self.count < 6:
+                    print("2-Firing " + str(self.count))
+                    anim2 = Animation(pos=(random.randrange(-300, 300, 10), 150), size=(100, 100), duration=5) + Animation(pos=(random.randrange(-300, 300, 10), 150), size=(5, 5), duration=5)
+                    anim2.start(self.ids.bossship)
+                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
                     array2.append(labels2)
                     self.add_widget(labels2)
                     sleep(1)
-        if movement == 5:
-            print("movement5")
-            for j in range(0, 5):
-                anim5 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(1, 1), duration=2)
-                anim5.start(self.ids.bossship)
-                sleep(1)
-                for f in range(0, 2):
+                    self.count += 1
+            if movement == 3:
+                print("movement3")
+                if self.count < 6:
+                    anim3 = Animation(pos=(random.randrange(-300, 300, 10), self.height * -.1), duration=2)
+                    anim3.start(self.ids.bossship)
+                    print("3-firing")
+                    sleep(1)
                     labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
                     array2.append(labels2)
                     self.add_widget(labels2)
+                    print("3-fired" + str(self.count))
                     sleep(1)
-        anim6 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(75, 75), duration=2)
-        anim6.start(self.ids.bossship)
+                    self.count += 1
+            if movement == 4:
+                print("movement4")
+                if self.count < 6:
+                    anim4 = Animation(pos=(self.ids.spaceship2.x, self.ids.bossship.y), size=(75, 75), duration=2)
+                    anim4.start(self.ids.bossship)
+                    sleep(1)
+                    if self.count2 < 6:
+                        print("4-Blast it " + str(self.count2))
+                        labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                        array2.append(labels2)
+                        self.add_widget(labels2)
+                        sleep(1)
+                        self.count2 += 1
+                    self.count2 = 0
+                    self.count += 1
+                self.count = 0
+            if movement == 5:
+                print("movement5")
+                if self.count < 6:
+                    anim5 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(1, 1), duration=2)
+                    anim5.start(self.ids.bossship)
+                    sleep(1)
+                    if self.count2 < 6:
+                        print("5-Firing " + str(self.count2))
+                        labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                        array2.append(labels2)
+                        self.add_widget(labels2)
+                        sleep(1)
+                        self.count2 += 1
+                    self.count2 = 0
+                    self.count += 1
+                self.count = 0
+            anim6 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(75, 75), duration=2)
+            anim6.start(self.ids.bossship)
 
 
     def space_update(self): # This should be inside the MainScreen Class
