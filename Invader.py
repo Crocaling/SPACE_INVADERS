@@ -320,7 +320,7 @@ class MainScreen(Screen):
         global event1
         global event2
         event1 = Clock.schedule_interval(self.fire, 1 / 4)
-        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2))
+        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3)-1 / 2))
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -379,7 +379,7 @@ class MainScreen(Screen):
                         self.remove_widget(riseups)
                         array3.remove(riseups)
                         Clock.unschedule(event2)
-                        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2 + .0001))
+                        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3)-1 / 2 + .000000001))
                         win_count += 1
                         if win_count == 27 and win == True:
                             Clock.unschedule(event1)
@@ -399,7 +399,7 @@ class MainScreen(Screen):
                     bad = 1
                     win_count += 1
                     Clock.unschedule(event2)
-                    event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2 + .0001))
+                    event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3)-1 / 2 + .000000001))
                     if win_count == 27 and win == True:
                         event1.cancel()
                         event2.cancel()
