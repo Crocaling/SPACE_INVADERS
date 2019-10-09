@@ -291,43 +291,51 @@ class MainScreen(Screen):
     ship_y_val = ObjectProperty()
     bdgy_pos = ObjectProperty()
     wave_count = ObjectProperty()
-    global array3
+
     global end
+    global counte
+    counte = 1
+    global idslist
+    idslist = []
     global event1
     global event2
     global array
     global array2
+    global apples2
     global lives
     global bad
     global bruh
     global win_count
+    global array3
+    global array5
+    array3 = []
+    array5 = []
+
     end = False
     bruh = 0
     bad = 0
-    global array3
-    lives = 5
     array = []
     array2 = []
+    def clockStart(self):
+        global event1
+        global event2
+        event1 = Clock.schedule_interval(self.fire, 1 / 4)
+        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2))
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.wave_count = 5
-        global event1
-        global event2
+        global idslist
+        idslist = (self.ids.bdgy0, self.ids.bdgy2, self.ids.bdgy3 ,self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6 ,
+                   self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9 , self.ids.bdgy10, self.ids.bdgy11, self.ids.bdgy12, self.ids.bdgy13,
+                   self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18, self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22,
+                   self.ids.bdgy23, self.ids.bdgy24, self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27)
         global array3
         global win_count
         global win
         win = True
         win_count = 0
-        array3 = [self.ids.bdgy0, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6,
-                  self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9, self.ids.bdgy10, self.ids.bdgy11, self.ids.bdgy12,
-                  self.ids.bdgy13, self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18,
-                  self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22, self.ids.bdgy23, self.ids.bdgy24,
-                  self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27]
-        event1 = Clock.schedule_interval(self.fire, 1 / 4)
-        event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3) / 2))
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
-        self.bdgy_pos = .1
 
 
     global xin
@@ -360,6 +368,7 @@ class MainScreen(Screen):
         global bruh
         global bad
         global win_count
+        global idslist
         for labels in array:
             if(labels.y > 300):
                 array.remove(labels)
@@ -411,6 +420,7 @@ class MainScreen(Screen):
         global lives
         global array2
         global win
+        global array
         for labels2 in array2:
             if(labels2.y < -250):
                 array2.remove(labels2)
@@ -427,6 +437,12 @@ class MainScreen(Screen):
                 if(lives <= 0):
                     self.ids.spaceship.y = -1000
                     win = False
+                    for applest in array2:
+                        self.remove_widget(applest)
+                    array2 = []
+                    for apples2t in array:
+                        self.remove_widget(apples2t)
+                    array = []
                     SCREEN_MANAGER.current = END_SCREEN_NAME
                     end = True
                     Clock.unschedule(event1)
@@ -436,7 +452,7 @@ class MainScreen(Screen):
     def fire(self,dt):
         if(self.joystick.get_button_state(0)==1):
             global array
-           # print("fired")
+            #print("fired")
             labels = Label(text ="|", x = self.joystick.get_axis('x')*400, y = self.height * -.38)
             array.append(labels)
             self.add_widget(labels)
@@ -455,7 +471,7 @@ class MainScreen(Screen):
     def fire2(self,dt):
         global array3
         global array2
-        # print("fired")
+        #print("fired")
         #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
         # manually filling in the array like I did here.
         if SCREEN_MANAGER.current == MAIN_SCREEN_NAME:
@@ -476,14 +492,43 @@ class MainScreen(Screen):
             sleep(.01)
 
     def bdgy_move(self):
-        anim = Animation(pos=(80, 1000), duration=.3) + Animation(pos=(-80, 1000), duration=.5) + Animation(
-            pos=(0, 1000), duration=.35)
-        anim.repeat = True
-        anim.start(self.ids.bdgy1)
+        global counte
+        if counte == 1:
+            anim = Animation(pos=(80, 1000), duration=.3) + Animation(pos=(-80, 1000), duration=.5) + Animation(
+                pos=(0, 1000), duration=.35)
+            anim.repeat = True
+            anim.start(self.ids.bdgy1)
 
     def start_space_thread(self):  # This should be inside the MainScreen Class
+        global win_count
+        global apples2
+        global win
+        global end
+        global lives
+        global array3
+        global counte
+        end = False
+        global idslist
+        lives = 5
+        self.wave_count = 5
+        win = True
+        win_count = 0
+        apples2 = len(array3) - 1
+        if(counte == 0):
+            for appe in array3:
+                self.remove_widget(appe)
+            for aplt in idslist:
+                self.add_widget(aplt)
+        array3 = list(idslist)
+       # print("%d + %d" % (len(array3), len(idslist)))
+        self.ids.life.text = "Health:%d" % lives
+        self.ids.power.text = "Power:%d" % self.wave_count
+        self.ids.spaceship.y = - self.height*.38
+        self.bdgy_pos = .1
         Thread(target=self.space_update).start()
         Thread(target=self.bdgy_move).start()
+        self.clockStart()
+        counte = 0
         Thread.daemon = True
 
 
