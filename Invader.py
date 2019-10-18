@@ -171,8 +171,8 @@ class MainScreen(Screen):
         global event2
         global event1
         global end
-        event1.cancel()
-        event2.cancel()
+        Clock.unschedule(event1)
+        Clock.unschedule(event2)
         end = True
     def counter(self):
         global xin
@@ -384,10 +384,13 @@ class BossScreen(MainScreen):
     global bad
     global bruh
     global win_count
+    global bosshealth
     global count
     global count2
+
     end = False
     array = []
+    bosshealth = 10
     array2 = []
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -396,6 +399,7 @@ class BossScreen(MainScreen):
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
 
     def start_space_thread(self):
+        global event2
         Window.clearcolor = (0, 0, 0, 1)
         Thread(target=self.space_update).start()
         Thread(target=self.boss_move).start()
@@ -425,15 +429,36 @@ class BossScreen(MainScreen):
         global bad
         global win_count
         global idslist
+        global bosshealth
         for labels in array:
             if(labels.y > 300):
                 array.remove(labels)
                 self.remove_widget(labels)
+            if labels.text == "(^^^^^^)":
+                if (abs(labels.y - (self.ids.bossship.y)) < 100 and abs(labels.x - self.ids.bossship.x) < 100):
+                    self.remove_widget(labels)
+                    array.remove(labels)
+                    bosshealth = bosshealth - 5
+                    if(bosshealth < 0):
+                        end = True
+                        Clock.unschedule(event2)
+                        Clock.unschedule(event1)
+                        SCREEN_MANAGER.current = WIN_SCREEN_NAME
+            if (abs(labels.y - (self.ids.bossship.y)) < 100 and abs(labels.x - self.ids.bossship.x) < 100):
+                self.remove_widget(labels)
+                array.remove(labels)
+                bosshealth = bosshealth - 1
+                if (bosshealth < 0):
+                    end = True
+                    Clock.unschedule(event2)
+                    Clock.unschedule(event1)
+                    SCREEN_MANAGER.current = WIN_SCREEN_NAME
             labels.y = labels.y + 10
 
     def fire2(self, dt):
-        dsafsd = 1
-        print("hi")
+        if end == False:
+            dsafsd = 1
+            print("fire2")
     def boss_move(self):
         global count
         global count2
