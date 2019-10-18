@@ -365,7 +365,7 @@
 
 <BossScreen>
     name: 'boss'
-    on_enter: root.setColor()
+    on_enter: root.start_space_thread()
     FloatLayout:
         size_hint: None, None
 
@@ -376,8 +376,8 @@
         x: root.width * .1
         size: 75, 75
 
-    Label:
-        id: spaceship2
-        text: "<_-_>"
-        y: root.height * -.38
-        color: 1, 1, 1, 1
+   # Label:
+   #     id: spaceship2
+   #     text: "<_-_>"
+   #     y: root.height * -.38
+    #    color: 1, 1, 1, 1
