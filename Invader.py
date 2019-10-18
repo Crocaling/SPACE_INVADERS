@@ -66,170 +66,6 @@ class WinScreen(Screen):
     def setColor(self):
             Window.clearcolor = (1, 0, 0, 1)
 
-class BossScreen(Screen):
-
-    def setColor(self):
-        Window.clearcolor = (0, 0, 0, 1)
-        Thread(target=self.space_update).start()
-        Thread(target=self.boss_move).start()
-        Thread.daemon = True
-
-    joystick = Joystick(0, True)
-    ship_x_val = ObjectProperty()
-    ship_y_val = ObjectProperty()
-    wave_count = ObjectProperty()
-    global end
-    global event1
-    global event2
-    global array
-    global array2
-    global lives
-    global bad
-    global bruh
-    global win_count
-    global count
-    global count2
-    end = False
-    array = []
-    array2 = []
-
-    def __init__(self, **kwargs):
-        super(BossScreen, self).__init__(**kwargs)
-        self.wave_count = 5
-        global event1
-        global event2
-        global win_count
-        global win
-        win = True
-        win_count = 0
-        #event1 = Clock.schedule_interval(self.fire, 1 / 4)
-        # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
-
-    def moveup2(self):
-        global end
-        global event1
-        global event2
-        global lives
-        global array2
-        global win
-        for labels2 in array2:
-            if(labels2.y < -250):
-                array2.remove(labels2)
-                self.remove_widget(labels2)
-            if(abs(labels2.y-(self.ids.spaceship2.y))<20 and abs(labels2.x-self.ship_x_val)<20):
-                lives = lives - 1
-                self.ids.life.text = "Health:%d" % lives
-                labels2.text = ">><<"
-                labels2.color = (1,0,0,1)
-                sleep(1/10)
-                self.remove_widget(labels2)
-                array2.remove(labels2)
-                print("u were hit")
-                if(lives <= 0):
-                    self.ids.spaceship2.y = -1000
-                    win = False
-                    SCREEN_MANAGER.current = END_SCREEN_NAME
-                    end = True
-                    print("lmao u ded")
-            labels2.y = labels2.y - 7
-
-
-    def boss_move(self):
-        global count
-        global count2
-        self.count = 0
-        self.count2 = 0
-        while True:
-            movement = random.randrange(0, 5, 1)
-            print(movement)
-            if movement == 1:
-                print("movement1")
-                anim1 = Animation(pos=(-300, 200), size=(50, 50), duration=1)
-                anim1.start(self.ids.bossship)
-                sleep(1)
-                if self.count < 6:
-                    print("1-Firing " + str(self.count))
-                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                    array2.append(labels2)
-                    self.add_widget(labels2)
-                    self.ids.bossship.x += 50
-                    sleep(1)
-                    self.count += 1
-
-            if movement == 2:
-                print("movement2")
-                anim2 = Animation(pos=(-300, 200), duration=1)
-                anim2.start(self.ids.bossship)
-                sleep(1)
-                if self.count < 6:
-                    print("2-Firing " + str(self.count))
-                    anim2 = Animation(pos=(random.randrange(-300, 300, 10), 150), size=(100, 100), duration=5) + Animation(pos=(random.randrange(-300, 300, 10), 150), size=(5, 5), duration=5)
-                    anim2.start(self.ids.bossship)
-                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                    array2.append(labels2)
-                    self.add_widget(labels2)
-                    sleep(1)
-                    self.count += 1
-            if movement == 3:
-                print("movement3")
-                if self.count < 6:
-                    anim3 = Animation(pos=(random.randrange(-300, 300, 10), self.height * -.1), duration=2)
-                    anim3.start(self.ids.bossship)
-                    print("3-firing")
-                    sleep(1)
-                    labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                    array2.append(labels2)
-                    self.add_widget(labels2)
-                    print("3-fired" + str(self.count))
-                    sleep(1)
-                    self.count += 1
-            if movement == 4:
-                print("movement4")
-                if self.count < 6:
-                    anim4 = Animation(pos=(self.ids.spaceship2.x, self.ids.bossship.y), size=(75, 75), duration=2)
-                    anim4.start(self.ids.bossship)
-                    sleep(1)
-                    if self.count2 < 6:
-                        print("4-Blast it " + str(self.count2))
-                        labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                        array2.append(labels2)
-                        self.add_widget(labels2)
-                        sleep(1)
-                        self.count2 += 1
-                    self.count2 = 0
-                    self.count += 1
-                self.count = 0
-            if movement == 5:
-                print("movement5")
-                if self.count < 6:
-                    anim5 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(1, 1), duration=2)
-                    anim5.start(self.ids.bossship)
-                    sleep(1)
-                    if self.count2 < 6:
-                        print("5-Firing " + str(self.count2))
-                        labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
-                        array2.append(labels2)
-                        self.add_widget(labels2)
-                        sleep(1)
-                        self.count2 += 1
-                    self.count2 = 0
-                    self.count += 1
-                self.count = 0
-            anim6 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(75, 75), duration=2)
-            anim6.start(self.ids.bossship)
-
-
-    def space_update(self): # This should be inside the MainScreen Class
-        global end
-        while end == False:
-            self.ship_x_val = self.joystick.get_axis('x') * 400
-            self.ids.spaceship2.x = self.ship_x_val
-            self.moveup()
-            self.moveup2()
-            #self.ship_y_val = self.joystick.get_axis('y') * -300
-            #self.ids.spaceship2.y = self.ship_y_val
-            sleep(.01)
-
 
 class StartScreen(Screen):
     def __init__(self, **kwargs):
@@ -290,8 +126,8 @@ class MainScreen(Screen):
     ship_x_val = ObjectProperty()
     ship_y_val = ObjectProperty()
     bdgy_pos = ObjectProperty()
-    wave_count = ObjectProperty()
-
+   # wave_count = ObjectProperty()
+    global wave_count
     global end
     global counte
     counte = 1
@@ -323,18 +159,8 @@ class MainScreen(Screen):
         event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3)-1 / 2))
 
     def __init__(self, **kwargs):
-        super(MainScreen, self).__init__(**kwargs)
-        self.wave_count = 5
-        global idslist
-        idslist = (self.ids.bdgy0, self.ids.bdgy2, self.ids.bdgy3 ,self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6 ,
-                   self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9 , self.ids.bdgy10, self.ids.bdgy11, self.ids.bdgy12, self.ids.bdgy13,
-                   self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18, self.ids.bdgy19, self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22,
-                   self.ids.bdgy23, self.ids.bdgy24, self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27)
-        global array3
-        global win_count
-        global win
-        win = True
-        win_count = 0
+        super(Screen, self).__init__(**kwargs)
+
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
 
 
@@ -450,6 +276,7 @@ class MainScreen(Screen):
                     print("lmao u ded")
             labels2.y = labels2.y - 7
     def fire(self,dt):
+        global wave_count
         if(self.joystick.get_button_state(0)==1):
             global array
             #print("fired")
@@ -457,13 +284,13 @@ class MainScreen(Screen):
             array.append(labels)
             self.add_widget(labels)
 
-        if (self.joystick.get_button_state(1) == 1 and self.wave_count > 0):
+        if (self.joystick.get_button_state(1) == 1 and wave_count > 0):
             # print("fired")
             labels = Label(text="(^^^^^^)", x=self.joystick.get_axis('x') * 400, y=self.height * -.1)
             array.append(labels)
             self.add_widget(labels)
-            self.wave_count -= 1
-            self.ids.power.text = "Powerups:%d" % self.wave_count
+            wave_count -= 1
+            self.ids.power.text = "Powerups:%d" % wave_count
 
         if (self.joystick.get_button_state(6) == 1):
             self.ids.spaceship.x -= .05
@@ -507,10 +334,23 @@ class MainScreen(Screen):
         global lives
         global array3
         global counte
-        end = False
+        global wave_count
+        wave_count = 5
         global idslist
+        idslist = (self.ids.bdgy0, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6,
+                   self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9, self.ids.bdgy10, self.ids.bdgy11, self.ids.bdgy12,
+                   self.ids.bdgy13,
+                   self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18, self.ids.bdgy19,
+                   self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22,
+                   self.ids.bdgy23, self.ids.bdgy24, self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27)
+        global array3
+        global win_count
+        global win
+        win = True
+        win_count = 0
+        end = False
         lives = 5
-        self.wave_count = 5
+        wave_count = 5
         win = True
         win_count = 0
         apples2 = len(array3) - 1
@@ -522,7 +362,7 @@ class MainScreen(Screen):
         array3 = list(idslist)
        # print("%d + %d" % (len(array3), len(idslist)))
         self.ids.life.text = "Health:%d" % lives
-        self.ids.power.text = "Power:%d" % self.wave_count
+        self.ids.power.text = "Power:%d" % wave_count
         self.ids.spaceship.y = - self.height*.38
         self.bdgy_pos = .1
         Thread(target=self.space_update).start()
@@ -530,6 +370,169 @@ class MainScreen(Screen):
         self.clockStart()
         counte = 0
         Thread.daemon = True
+class BossScreen(MainScreen):
+    joystick = Joystick(0, True)
+    ship_x_val = ObjectProperty()
+    ship_y_val = ObjectProperty()
+    wave_count = ObjectProperty()
+    global end
+    global event1
+    global event2
+    global array
+    global array2
+    global lives
+    global bad
+    global bruh
+    global win_count
+    global count
+    global count2
+    end = False
+    array = []
+    array2 = []
+    def __init__(self, **kwargs):
+        super(MainScreen, self).__init__(**kwargs)
+        print("hi")
+        #event1 = Clock.schedule_interval(self.fire, 1 / 4)
+        # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
+
+    def start_space_thread(self):
+        Window.clearcolor = (0, 0, 0, 1)
+        Thread(target=self.space_update).start()
+        Thread(target=self.boss_move).start()
+        self.clockStart()
+        idslist = (self.ids.bdgy0, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6,
+                   self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9, self.ids.bdgy10, self.ids.bdgy11,
+                   self.ids.bdgy12,
+                   self.ids.bdgy13,
+                   self.ids.bdgy14, self.ids.bdgy15, self.ids.bdgy16, self.ids.bdgy17, self.ids.bdgy18,
+                   self.ids.bdgy19,
+                   self.ids.bdgy20, self.ids.bdgy21, self.ids.bdgy22,
+                   self.ids.bdgy23, self.ids.bdgy24, self.ids.bdgy25, self.ids.bdgy26, self.ids.bdgy27)
+        for bruhs in idslist:
+            print("this runs")
+            self.remove_widget(bruhs)
+        global end
+        end = False
+        Thread.daemon = True
+    def moveup(self):
+        global win
+        global end
+        global event2
+        global event1
+        global array3
+        global array
+        global bruh
+        global bad
+        global win_count
+        global idslist
+        for labels in array:
+            if(labels.y > 300):
+                array.remove(labels)
+                self.remove_widget(labels)
+            labels.y = labels.y + 10
+
+    def fire2(self, dt):
+        dsafsd = 1
+        print("hi")
+    def boss_move(self):
+        global count
+        global count2
+        self.count = 0
+        self.count2 = 0
+        while True:
+            movement = random.randrange(0, 5, 1)
+            print(movement)
+            if movement == 1:
+                print("movement1")
+                anim1 = Animation(pos=(-300, 200), size=(50, 50), duration=1)
+                anim1.start(self.ids.bossship)
+                sleep(1)
+                if self.count < 6:
+                    print("1-Firing " + str(self.count))
+                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    array2.append(labels2)
+                    self.add_widget(labels2)
+                    self.ids.bossship.x += 50
+                    sleep(1)
+                    self.count += 1
+
+            if movement == 2:
+                print("movement2")
+                anim2 = Animation(pos=(-300, 200), duration=1)
+                anim2.start(self.ids.bossship)
+                sleep(1)
+                if self.count < 6:
+                    print("2-Firing " + str(self.count))
+                    anim2 = Animation(pos=(random.randrange(-300, 300, 10), 150), size=(100, 100), duration=5) + Animation(pos=(random.randrange(-300, 300, 10), 150), size=(5, 5), duration=5)
+                    anim2.start(self.ids.bossship)
+                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    array2.append(labels2)
+                    self.add_widget(labels2)
+                    sleep(1)
+                    self.count += 1
+            if movement == 3:
+                print("movement3")
+                if self.count < 6:
+                    anim3 = Animation(pos=(random.randrange(-300, 300, 10), self.height * -.1), duration=2)
+                    anim3.start(self.ids.bossship)
+                    print("3-firing")
+                    sleep(1)
+                    labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    array2.append(labels2)
+                    self.add_widget(labels2)
+                    print("3-fired" + str(self.count))
+                    sleep(1)
+                    self.count += 1
+            if movement == 4:
+                print("movement4")
+                if self.count < 6:
+                    anim4 = Animation(pos=(self.ids.spaceship.x, self.ids.bossship.y), size=(75, 75), duration=2)
+                    anim4.start(self.ids.bossship)
+                    sleep(1)
+                    if self.count2 < 6:
+                        print("4-Blast it " + str(self.count2))
+                        labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                        array2.append(labels2)
+                        self.add_widget(labels2)
+                        sleep(1)
+                        self.count2 += 1
+                    self.count2 = 0
+                    self.count += 1
+                self.count = 0
+            if movement == 5:
+                print("movement5")
+                if self.count < 6:
+                    anim5 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(1, 1), duration=2)
+                    anim5.start(self.ids.bossship)
+                    sleep(1)
+                    if self.count2 < 6:
+                        print("5-Firing " + str(self.count2))
+                        labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                        array2.append(labels2)
+                        self.add_widget(labels2)
+                        sleep(1)
+                        self.count2 += 1
+                    self.count2 = 0
+                    self.count += 1
+                self.count = 0
+            anim6 = Animation(pos=(random.randrange(-300, 300, 10), self.ids.bossship.y), size=(75, 75), duration=2)
+            anim6.start(self.ids.bossship)
+
+
+    def space_update(self): # This should be inside the MainScreen Class
+        global end
+        global wave_count
+        while end == False:
+            self.ship_x_val = self.joystick.get_axis('x') * 400
+            self.ids.spaceship.x = self.ship_x_val
+            self.moveup()
+            self.moveup2()
+            self.ids.life.text = "Health:%d" % lives
+            self.ids.power.text = "Power:%d" % wave_count
+            #self.ship_y_val = self.joystick.get_axis('y') * -300
+            self.ids.spaceship.y = self.height * -.38
+            sleep(.01)
+
 
 
 
