@@ -390,14 +390,73 @@ class BossScreen(MainScreen):
 
     end = False
     array = []
-    bosshealth = 10
+    bosshealth = 2000
     array2 = []
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         print("hi")
         #event1 = Clock.schedule_interval(self.fire, 1 / 4)
         # I just used clock scheduling to see if it would work but you turn this into a thread instead if you want. if the fire function needs to be canceled, do event1.cancel()
-
+    def moveup2(self):
+        global end
+        global event1
+        global event2
+        global lives
+        global array2
+        global win
+        global array
+        for labels2 in array2:
+            if(labels2.y < -250):
+                array2.remove(labels2)
+                self.remove_widget(labels2)
+            if(labels2.text == "YYYY"):
+                if (abs(labels2.y - (self.ids.spaceship.y)) < 30 and abs(labels2.x - self.ship_x_val) < 30):
+                    lives = lives - 1
+                    self.ids.life.text = "Health:%d" % lives
+                    labels2.text = ">><<"
+                    labels2.color = (1, 0, 0, 1)
+                    sleep(1 / 10)
+                    self.remove_widget(labels2)
+                    array2.remove(labels2)
+                    print("u were hit")
+                    if (lives <= 0):
+                        self.ids.spaceship.y = -1000
+                        win = False
+                        for applest in array2:
+                            self.remove_widget(applest)
+                        array2 = []
+                        for apples2t in array:
+                            self.remove_widget(apples2t)
+                        array = []
+                        SCREEN_MANAGER.current = END_SCREEN_NAME
+                        end = True
+                        Clock.unschedule(event1)
+                        Clock.unschedule(event2)
+                        print("lmao u ded")
+            if(abs(labels2.y-(self.ids.spaceship.y))<60 and abs(labels2.x-self.ship_x_val)<60):
+                lives = lives - 1
+                self.ids.life.text = "Health:%d" % lives
+                labels2.text = ">><<"
+                labels2.color = (1,0,0,1)
+                sleep(1/10)
+                self.remove_widget(labels2)
+                array2.remove(labels2)
+                print("u were hit")
+                if(lives <= 0):
+                    self.ids.spaceship.y = -1000
+                    win = False
+                    for applest in array2:
+                        self.remove_widget(applest)
+                    array2 = []
+                    for apples2t in array:
+                        self.remove_widget(apples2t)
+                    array = []
+                    SCREEN_MANAGER.current = END_SCREEN_NAME
+                    end = True
+                    Clock.unschedule(event1)
+                    Clock.unschedule(event2)
+                    print("lmao u ded")
+            labels2.y = labels2.y - 15
     def start_space_thread(self):
         global event2
         Window.clearcolor = (0, 0, 0, 1)
@@ -424,6 +483,7 @@ class BossScreen(MainScreen):
         global event2
         global event1
         global array3
+        global array2
         global array
         global bruh
         global bad
@@ -435,30 +495,43 @@ class BossScreen(MainScreen):
                 array.remove(labels)
                 self.remove_widget(labels)
             if labels.text == "(^^^^^^)":
-                if (abs(labels.y - (self.ids.bossship.y)) < 100 and abs(labels.x - self.ids.bossship.x) < 100):
+                if (abs(labels.y - (self.ids.bossship.y)) < 100 and abs(labels.x - self.ids.bossship.x) < 125):
                     self.remove_widget(labels)
                     array.remove(labels)
-                    bosshealth = bosshealth - 5
+                    bosshealth = bosshealth - 100
+                    self.ids.bosshealth.text = "Bosshealth:%d" % bosshealth
                     if(bosshealth < 0):
                         end = True
                         Clock.unschedule(event2)
                         Clock.unschedule(event1)
+                        for asds in array:
+                            self.remove_widget(asds)
+                        array = []
+                        for afds in array2:
+                            self.remove_widget(afds)
+                        array2 = []
                         SCREEN_MANAGER.current = WIN_SCREEN_NAME
-            if (abs(labels.y - (self.ids.bossship.y)) < 100 and abs(labels.x - self.ids.bossship.x) < 100):
+            elif(abs(labels.y - (self.ids.bossship.y)) < 100 and abs(labels.x - self.ids.bossship.x) < 125):
                 self.remove_widget(labels)
                 array.remove(labels)
                 bosshealth = bosshealth - 1
+                self.ids.bosshealth.text = "Bosshealth:%d" % bosshealth
                 if (bosshealth < 0):
                     end = True
                     Clock.unschedule(event2)
                     Clock.unschedule(event1)
+                    for asds in array:
+                        self.remove_widget(asds)
+                    array = []
+                    for afds in array2:
+                        self.remove_widget(afds)
+                    array2 = []
                     SCREEN_MANAGER.current = WIN_SCREEN_NAME
             labels.y = labels.y + 10
 
     def fire2(self, dt):
         if end == False:
             dsafsd = 1
-            print("fire2")
     def boss_move(self):
         global count
         global count2
@@ -474,11 +547,11 @@ class BossScreen(MainScreen):
                 sleep(1)
                 if self.count < 6:
                     print("1-Firing " + str(self.count))
-                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
                     array2.append(labels2)
                     self.add_widget(labels2)
                     self.ids.bossship.x += 50
-                    sleep(1)
+                    sleep(.02)
                     self.count += 1
 
             if movement == 2:
@@ -490,10 +563,10 @@ class BossScreen(MainScreen):
                     print("2-Firing " + str(self.count))
                     anim2 = Animation(pos=(random.randrange(-300, 300, 10), 150), size=(100, 100), duration=5) + Animation(pos=(random.randrange(-300, 300, 10), 150), size=(5, 5), duration=5)
                     anim2.start(self.ids.bossship)
-                    labels2 = Label(text="YY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
                     array2.append(labels2)
                     self.add_widget(labels2)
-                    sleep(1)
+                    sleep(.02)
                     self.count += 1
             if movement == 3:
                 print("movement3")
@@ -502,11 +575,11 @@ class BossScreen(MainScreen):
                     anim3.start(self.ids.bossship)
                     print("3-firing")
                     sleep(1)
-                    labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                    labels2 = Label(text="(############)", x=self.ids.bossship.x, y=self.ids.bossship.y)
                     array2.append(labels2)
                     self.add_widget(labels2)
                     print("3-fired" + str(self.count))
-                    sleep(1)
+                    sleep(.02)
                     self.count += 1
             if movement == 4:
                 print("movement4")
@@ -516,10 +589,10 @@ class BossScreen(MainScreen):
                     sleep(1)
                     if self.count2 < 6:
                         print("4-Blast it " + str(self.count2))
-                        labels2 = Label(text="YYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                        labels2 = Label(text="YYYYYYYY", x=self.ids.bossship.x, y=self.ids.bossship.y)
                         array2.append(labels2)
                         self.add_widget(labels2)
-                        sleep(1)
+                        sleep(.02)
                         self.count2 += 1
                     self.count2 = 0
                     self.count += 1
@@ -532,10 +605,10 @@ class BossScreen(MainScreen):
                     sleep(1)
                     if self.count2 < 6:
                         print("5-Firing " + str(self.count2))
-                        labels2 = Label(text="(######)", x=self.ids.bossship.x, y=self.ids.bossship.y)
+                        labels2 = Label(text="(##########)", x=self.ids.bossship.x, y=self.ids.bossship.y)
                         array2.append(labels2)
                         self.add_widget(labels2)
-                        sleep(1)
+                        sleep(.02)
                         self.count2 += 1
                     self.count2 = 0
                     self.count += 1
