@@ -271,12 +271,16 @@ class MainScreen(Screen):
                     array = []
                     SCREEN_MANAGER.current = END_SCREEN_NAME
                     end = True
-                    Clock.unschedule(event1)
-                    Clock.unschedule(event2)
+                    Clock.unschedule(self.fire)
+                    Clock.unschedule(self.fire2)
                     print("lmao u ded")
             labels2.y = labels2.y - 7
     def fire(self,dt):
         global wave_count
+        if end == True:
+            Clock.clear()
+            return
+       # print("owo")
         if(self.joystick.get_button_state(0)==1):
             global array
             #print("fired")
@@ -298,6 +302,8 @@ class MainScreen(Screen):
     def fire2(self,dt):
         global array3
         global array2
+        if end == True:
+            return
         #print("fired")
         #Basic random shooting. In the future, we should automatically create a series of identical "ships" aka labels and put them in the array instead of
         # manually filling in the array like I did here.
@@ -405,6 +411,7 @@ class BossScreen(MainScreen):
         global array2
         global win
         global array
+
         for labels2 in array2:
             if(labels2.y < -250):
                 array2.remove(labels2)
@@ -453,16 +460,19 @@ class BossScreen(MainScreen):
                     array = []
                     SCREEN_MANAGER.current = END_SCREEN_NAME
                     end = True
-                    Clock.unschedule(event1)
-                    Clock.unschedule(event2)
+                    Clock.unschedule(self.fire)
+                    Clock.unschedule(self.fire2)
                     print("lmao u ded")
             labels2.y = labels2.y - 15
     def start_space_thread(self):
         global event2
+        global bosshealth
         Window.clearcolor = (0, 0, 0, 1)
         Thread(target=self.space_update).start()
         Thread(target=self.boss_move).start()
         self.clockStart()
+        bosshealth = 2000
+        self.ids.bosshealth.text = "Bosshealth:%d" % bosshealth
         idslist = (self.ids.bdgy0, self.ids.bdgy2, self.ids.bdgy3, self.ids.bdgy4, self.ids.bdgy5, self.ids.bdgy6,
                    self.ids.bdgy7, self.ids.bdgy8, self.ids.bdgy9, self.ids.bdgy10, self.ids.bdgy11,
                    self.ids.bdgy12,
@@ -530,6 +540,7 @@ class BossScreen(MainScreen):
             labels.y = labels.y + 10
 
     def fire2(self, dt):
+        #print("nowo")
         if end == False:
             dsafsd = 1
     def boss_move(self):
@@ -537,7 +548,7 @@ class BossScreen(MainScreen):
         global count2
         self.count = 0
         self.count2 = 0
-        while True:
+        while end == False:
             movement = random.randrange(0, 5, 1)
             print(movement)
             if movement == 1:
