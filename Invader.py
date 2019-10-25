@@ -192,6 +192,7 @@ class MainScreen(Screen):
         global array3
         global array
         global bruh
+        global array2
         global bad
         global win_count
         global idslist
@@ -210,6 +211,12 @@ class MainScreen(Screen):
                         if win_count == 27 and win == True:
                             Clock.unschedule(event1)
                             Clock.unschedule(event2)
+                            for applest in array2:
+                                self.remove_widget(applest)
+                            array2 = []
+                            for apples2t in array:
+                                self.remove_widget(apples2t)
+                            array = []
                             end = True
                             SCREEN_MANAGER.current = BOSS_SCREEN_NAME
                         bruh = bruh +1
@@ -229,6 +236,13 @@ class MainScreen(Screen):
                     if win_count == 27 and win == True:
                         event1.cancel()
                         event2.cancel()
+                        bad = 0
+                        for applest in array2:
+                            self.remove_widget(applest)
+                        array2 = []
+                        for apples2t in array:
+                            self.remove_widget(apples2t)
+                        array = []
                         SCREEN_MANAGER.current = BOSS_SCREEN_NAME
                         end = True
             if(bad == 1):
@@ -249,8 +263,8 @@ class MainScreen(Screen):
         global array
         for labels2 in array2:
             if(labels2.y < -250):
-                array2.remove(labels2)
                 self.remove_widget(labels2)
+                array2.remove(labels2)
             if(abs(labels2.y-(self.ids.spaceship.y))<20 and abs(labels2.x-self.ship_x_val)<20):
                 lives = lives - 1
                 self.ids.life.text = "Health:%d" % lives
@@ -414,8 +428,8 @@ class BossScreen(MainScreen):
 
         for labels2 in array2:
             if(labels2.y < -250):
-                array2.remove(labels2)
                 self.remove_widget(labels2)
+                array2.remove(labels2)
             if(labels2.text == "YYYY"):
                 if (abs(labels2.y - (self.ids.spaceship.y)) < 30 and abs(labels2.x - self.ship_x_val) < 30):
                     lives = lives - 1
