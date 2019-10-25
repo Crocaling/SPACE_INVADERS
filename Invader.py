@@ -234,8 +234,8 @@ class MainScreen(Screen):
                     Clock.unschedule(event2)
                     event2 = Clock.schedule_interval(self.fire2, 1 / (len(array3)-1 / 2 + .000000001))
                     if win_count == 27 and win == True:
-                        event1.cancel()
-                        event2.cancel()
+                        Clock.unschedule(event1)
+                        Clock.unschedule(event2)
                         bad = 0
                         for applest in array2:
                             self.remove_widget(applest)
@@ -285,14 +285,13 @@ class MainScreen(Screen):
                     array = []
                     SCREEN_MANAGER.current = END_SCREEN_NAME
                     end = True
-                    Clock.unschedule(self.fire)
-                    Clock.unschedule(self.fire2)
+                    Clock.unschedule(event1)
+                    Clock.unschedule(event2)
                     print("lmao u ded")
             labels2.y = labels2.y - 7
     def fire(self,dt):
         global wave_count
         if end == True:
-            Clock.clear()
             return
        # print("owo")
         if(self.joystick.get_button_state(0)==1):
